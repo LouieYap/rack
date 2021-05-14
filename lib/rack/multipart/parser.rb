@@ -85,7 +85,7 @@ module Rack
         io.rewind
         b = Time.now
         diff = 1000 * (b.to_f - a.to_f)
-        logger.info 'Self Parse Time : ' + diff.to_s
+        Rails.logger.info 'Self Parse Time : ' + diff.to_s
         parser.result
       end
 
@@ -230,7 +230,7 @@ module Rack
         end
         b = Time.now
         diff = 1000 * (b.to_f - a.to_f)
-        logger.info 'Run Parser Time: ' + diff.to_s
+        Rails.logger.info 'Run Parser Time: ' + diff.to_s
       end
 
       def handle_fast_forward
