@@ -61,6 +61,9 @@ module Rack
       end
 
       def self.parse(io, content_length, content_type, tmpfile, bufsize, qp)
+        Rails.logger.info "Checking Rack parse"
+        a = Time.now
+
         return EMPTY if 0 == content_length
 
         boundary = parse_boundary content_type
@@ -71,13 +74,18 @@ module Rack
 
         parser = new(boundary, tmpfile, bufsize, qp)
         parser.on_read io.read(bufsize, outbuf)
-
+        x = 0
         loop do
+          x = x + 1
+          Rails.logger.info "Self parse loop " + x.to_s
           break if parser.state == :DONE
           parser.on_read io.read(bufsize, outbuf)
         end
 
         io.rewind
+        b = Time.now
+        diff = 1000 * (b.to_f - a.to_f)
+        logger.info 'Self Parse Time : ' + diff.to_s
         parser.result
       end
 
@@ -201,7 +209,12 @@ module Rack
       private
 
       def run_parser
+        Rails.logger.info "Run Parse"
+        x = 0
+        a = Time.now
         loop do
+          x = x + 1
+          Rails.logger.info "Run parser loop " + x.to_s
           case @state
           when :FAST_FORWARD
             break if handle_fast_forward == :want_read
@@ -215,6 +228,9 @@ module Rack
             break
           end
         end
+        b = Time.now
+        diff = 1000 * (b.to_f - a.to_f)
+        logger.info 'Run Parser Time: ' + diff.to_s
       end
 
       def handle_fast_forward
