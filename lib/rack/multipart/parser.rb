@@ -13,11 +13,7 @@ module Rack
       TEXT_PLAIN = "text/plain"
       TEMPFILE_FACTORY = lambda { |filename, content_type|
         Rails.logger.info 'Temp File Factory'
-        a = Time.now
         Tempfile.new(["RackMultipart", ::File.extname(filename.gsub("\0", '%00'))])
-        b = Time.now
-        diff = 1000 * (b.to_f - a.to_f)
-        Rails.logger.info 'TEMP FACTORY TIME : ' + diff.to_s
       }
 
       BOUNDARY_REGEX = /\A([^\n]*(?:\n|\Z))/
