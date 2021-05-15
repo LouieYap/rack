@@ -112,7 +112,7 @@ module Rack
     end
 
     def call(env)
-      Rails.logger "Send File Call"
+      Rails.logger.info "Send File Call"
       a=  Time.now
       status, headers, body = @app.call(env)
       if body.respond_to?(:to_path)
