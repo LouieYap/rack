@@ -11,6 +11,8 @@ module Rack
 
       def initialize(filepath = nil, ct = "text/plain", bin = false,
                      path: filepath, content_type: ct, binary: bin, filename: nil, io: nil)
+        Rails.logger.info 'UPLOADED_FILE INITIALIZE'
+        a = Time.now
         if io
           @tempfile = io
           @original_filename = filename
@@ -21,6 +23,9 @@ module Rack
           @tempfile.binmode if binary
           FileUtils.copy_file(path, @tempfile.path)
         end
+        b = Time.now
+        diff = 1000 * (b.to_f - a.to_f)
+        Rails.logger.info 'Initialize Uploaded file time : ' + diff.to_s
         @content_type = content_type
       end
 

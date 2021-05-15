@@ -13,6 +13,8 @@ module Rack
     end
 
     def call(env)
+      Rails.logger.info 'Method Call Override'
+      a = Time.now
       if allowed_methods.include?(env[REQUEST_METHOD])
         method = method_override(env)
         if HTTP_METHODS.include?(method)
@@ -20,6 +22,9 @@ module Rack
           env[REQUEST_METHOD] = method
         end
       end
+      b = Time.now
+      diff = 1000 * (b.to_f - a.to_f)
+      Rails.logger.info 'Method Call Override : ' + diff.to_s
 
       @app.call(env)
     end

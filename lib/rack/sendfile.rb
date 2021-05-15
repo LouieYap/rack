@@ -99,14 +99,21 @@ module Rack
 
   class Sendfile
     def initialize(app, variation = nil, mappings = [])
+      Rails.logger.info 'Send file initialize'
+      a = Time.now
       @app = app
       @variation = variation
       @mappings = mappings.map do |internal, external|
         [/^#{internal}/i, external]
       end
+      b = Time.now
+      diff = 1000 * (b.to_f - a.to_f)
+      Rails.logger.info 'Send file initialize : ' + diff.to_s
     end
 
     def call(env)
+      Rails.logger "Send File Call"
+      a=  Time.now
       status, headers, body = @app.call(env)
       if body.respond_to?(:to_path)
         case type = variation(env)
@@ -136,6 +143,9 @@ module Rack
           env[RACK_ERRORS].puts "Unknown x-sendfile variation: '#{type}'.\n"
         end
       end
+      b = Time.now
+      diff = 1000 * (b.to_f - a.to_f)
+      Rails.logger.info 'Send File Time : ' + diff.to_s
       [status, headers, body]
     end
 
